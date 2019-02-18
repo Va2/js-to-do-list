@@ -1,10 +1,10 @@
-const taskInput = document.getElementById('new-to-do');
-const addNewTaskBtn = document.getElementsByClassName('btn-primary')[0];
+const taskInput = document.getElementById('new-to-do'),
+    addNewTaskBtn = document.getElementsByClassName('btn-primary')[0];
 
 // Fonctions créations éléments
 const createLiElt = () => {
     const newLiElt = document.createElement('li');
-    newLiElt.classList = 'list-group-item';
+    newLiElt.classList.add('list-group-item');
     return newLiElt;
 }
 
@@ -36,16 +36,16 @@ const createIconElt = (fasClass, iconId, iconColor) => {
 
 addNewTaskBtn.addEventListener('click', () => {
     // Stock tous les elts dans des var ensuite les append avec les var
-    const ulElt = document.getElementById('tasks-container');
+    const ulElt = document.getElementById('tasks-container'),
     // Eléments stockés dans variables
-    const currentLiElt = createLiElt();
-    const currentDivElt = createDivElt();
-    const currentPElt = createPElt();
-    const currentSpanElt = createSpanElt();
-    const currentDoneIcon = createIconElt('fa-check-circle', 'done', 'text-success');
-    const currentEditIcon = createIconElt('fa-edit', 'edit', 'text-warning');
-    const currentRemoveIcon = createIconElt('fa-trash-alt', 'remove', 'text-danger');
-    const currentSaveIcon = createIconElt('fa-save', 'save', 'text-success');
+        currentLiElt = createLiElt(),
+        currentDivElt = createDivElt(),
+        currentPElt = createPElt(),
+        currentSpanElt = createSpanElt(),
+        currentDoneIcon = createIconElt('fa-check-circle', 'done', 'text-success'),
+        currentEditIcon = createIconElt('fa-edit', 'edit', 'text-warning'),
+        currentRemoveIcon = createIconElt('fa-trash-alt', 'remove', 'text-danger'),
+        currentSaveIcon = createIconElt('fa-save', 'save', 'text-success');
 
     // CREATION DU LI AVEC CES ENFANTS
     // Création des 4 icones dans le span
@@ -60,13 +60,8 @@ addNewTaskBtn.addEventListener('click', () => {
     currentDivElt.appendChild(currentSpanElt);
     // Création de la div dans le li
     currentLiElt.appendChild(currentDivElt);
-    // Création du li dans le ul (!!! PROB NEW TASK INSERTED @ the END !!!)
-    ulElt.appendChild(currentLiElt);
-    // ulElt.insertBefore(currentLiElt, currentLiElt.parentElement.firstElementChild);
-    // ulElt.insertBefore(currentLiElt, currentLiElt.parentNode.firstElementChild);
-    // ulElt.insertBefore(currentLiElt, null);
-    // Ajout d'un élément au tout début de la liste
-    // ulElt.insertAdjacentHTML('afterBegin', '<li class="list-group-item"></li>');
+    // Ajout du li entant que premier enfant du ul
+    ulElt.insertBefore(currentLiElt, ulElt.firstChild);
 
     // BTNS EVENTS FUNCTIONS
     const deleteTask = () => {
@@ -105,7 +100,7 @@ addNewTaskBtn.addEventListener('click', () => {
         // Affiche l'icone "save"
         currentSaveIcon.classList.remove('d-none');
 
-        let saveUpdatedTask = () => {
+        const saveUpdatedTask = () => {
             // Cache l'icone SAVE
             currentSaveIcon.classList.add('d-none');
     
@@ -133,4 +128,41 @@ addNewTaskBtn.addEventListener('click', () => {
     currentDoneIcon.addEventListener('click', doneTask);
     // Changement de la valeur de la tâche au click de l'icone "update"
     currentEditIcon.addEventListener('click', updateTask);
+
+    // FILTER : ToDo - Done - All
+    const filterAllTasksBtn = document.getElementById('all-filter'),
+        filterDoneTasksBtn = document.getElementById('done-filter'),
+        filterTodoTasksBtn = document.getElementById('todo-filter'),
+        liEltsArr = document.getElementsByTagName('li');
+
+    filterDoneTasksBtn.addEventListener('click', () => {
+        for (const liElt of liEltsArr) {
+            // NOT (!) INCLUDES
+            if (!liElt.className.includes('bg-done-task')) {
+                liElt.classList.add('d-none');
+            } else {
+                liElt.classList.remove('d-none');
+            }
+        }
+    })
+
+    filterTodoTasksBtn.addEventListener('click', () => {
+        for (const liElt of liEltsArr) {
+            // INCLUDES
+            if (liElt.className.includes('bg-done-task')) {
+                liElt.classList.add('d-none');
+            } else {
+                liElt.classList.remove('d-none');
+            }
+        }
+    })
+
+    filterAllTasksBtn.addEventListener('click', () => {
+        for (const liElt of liEltsArr) {
+            liElt.classList.remove('d-none');
+        }
+    })
+
+    // RESET NEW TASK INPUT FIELD EMPTY
+    taskInput.value = '';
 });
